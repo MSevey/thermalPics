@@ -16,6 +16,10 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://pguser:password@localhost/
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
+# Setting global variables for directories
+tifDir = './static/imagesRM/tif/'
+jpgDir = './static/imagesRM/jpg/'
+
 # creating imagedata model
 class ImageData(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -37,63 +41,50 @@ class ImageData(db.Model):
     def __repr__(self):
         return "<ImageData %r>" % self.id
 
-# OPTIMIZATIONS
-# current function has run time of O(n^2), if avoid this scaling issue, in real application I would
-#   do this analysis as images came in so the sample set was always small. Or
-#   if possible pass in the two files at once instead of looping over a directory
-def pixels():
+
+# function for reading tif and jpg images and returning temp data and GPS data
+# stores information in database
+#
+# Current runtime is O(i*w*h) where i is # images, w and h are the width and height
+#   in pixels for the tiff file.  If built in max, min, and mean are runtimes of O(n)
+#   then the runtime would be O(i*(wh^2)) so it would be faster to calculate the max,
+#   min, and average while looping over the pixels
+def pixels(tifDir, jpgDir):
+    # iT = Image.open(tifDir + 'DJI_0034.tif')
+    # fnT, fextT = os.path.splitext(os.path.basename(tifDir + 'DJI_0034.tif'))
+
     # T denotes tif variable, J denotes jpg variable
     # Loop over tiff files
-    # for fT in os.listdir('./static/imagesRM/tif/'):
-    #     # verifying it is a TIFF file
-    #     if fT.endswith('.tif'):
-    #         iT = Image.open(fT)
-    iT = Image.open('./static/imagesRM/tif/DJI_0034.tif')
-    # fnT, fextT = os.path.splitext(fT)
-    fnT, fextT = os.path.splitext(os.path.basename('./static/imagesRM/tif/DJI_0034.tif'))
-            # # Loop over jpg files to find cooresponding file
-            # for fJ in os.listdir('./static/imagesRM/jpg/'):
-            #     # verifying it is a jpg file
-            #     if fJ.endswith('jpg'):
-            #         fnJ, fextJ = os.path.splitext(fJ)
-            #         if fnT == fnJ:
-            #             iJ = Image.open(fJ)
-            #             # assuming no duplicate image names
-            #             break
-        # Find max and min temps
-    size = w,h = iT.size
-    # Loop over impage pixel by pixle
-    temps = []
-    for x in range(w):
-        for y in range(h):
-            temps.append(iT.getpixel((x,y)))
+    for fT in os.listdir(tifDir):
+        # verifying it is a TIFF file
+        if fT.endswith('.tif'):
+            # Opening image file and splitting file name and extension
+            iT = Image.open(tifDir+fT)
+            fn, fextT = os.path.splitext(fT)
 
-    img = ImageData(fnT, max(temps), min(temps), np.mean(temps))
-    db.session.add(img)
-    db.session.commit()
+            # Finding cooresponding jpg file
+            fextJ = '.jpg'
+            fJ = jpgDir + fn + fextJ
+            iJ = Image.open(fJ)
+            exifData = iJ._getexif()
 
-    # find max, min, average temps from tiff files
+            # Find max and min temps, create empty array for temps
+            temps = []
+            # determining size of the tiff file
+            size = w,h = iT.size
+            # Loop over impage pixel by pixle
+            for x in range(w):
+                for y in range(h):
+                    temps.append(iT.getpixel((x,y)))
+
+            img = ImageData(fn, max(temps), min(temps), np.mean(temps))
+            db.session.add(img)
+            db.session.commit()
+
     # find GPS coordinates from jpg files
     # store files to database if doesn't exit
-    # pixel = i.getpixel(coordinate)
-    # exifData = i._getexif()
-    return ;
 
-# pixels('./static/imagesRM/jpg/DJI_0034.jpg')
-
-# for looping over images in current directory
-# size_300 = (300,300)
-# for f in os.listdir('.'):
-#     # checks for files ending in .jpg
-#     if f.endswith('.jpg'):
-#         # opens file as an object i
-#         i = Image.open(f)
-#         # splitting fn (filename) and fext (file extension)
-#         fn, fext = os.path.splitext(f)
-#         # if i wanted to save them in a different format and folder or different size
-#         i.thumbnail(size_300)
-#         i.save('dir/{}{}'.format(fn,fext))
-
+    return;
 
 
 # setting root route
@@ -105,7 +96,7 @@ def index():
 # setting img analysis route
 @app.route('/post_imgs')
 def post_imgs():
-    pixels()
+    pixels(tifDir, jpgDir)
     return redirect(url_for('index'))
 
 
