@@ -27,6 +27,10 @@
         max-width: 200px;
     }
 
+    .popup-table {
+      text-align: center;
+    }
+
   </style>
 
   <h3>Time for some maps</h3>
@@ -39,22 +43,23 @@
     // var monument = [-77.0353, 38.8895];
     var map = new mapboxgl.Map({
         container: 'map',
-        style: 'mapbox://styles/mapbox/streets-v9'
-        // center: monument,
-        // zoom: 10
+        style: 'mapbox://styles/mapbox/streets-v9',
+        // found average long and lat from SQL query of the database
+        center: [-100.896880335385, 51.7557067921408],
+        zoom: 15
     });
 
     {% for img in imgs %}
       // create the popup
       var popup = new mapboxgl.Popup()
-        .setHTML("<table>"
+        .setHTML("<table class='popup-table'>"
                   +  "<th>Max Temp</th>"
                   +  "<th>Min Temp</th>"
                   +  "<th>Average Temp</th>"
                   +  "<tr>"
-                      +  "<td>{{img.maxTemp}}</td>"
-                      +  "<td>{{img.minTemp}}</td>"
-                      +  "<td>{{img.averageTemp}}</td>"
+                      +  "<td>{{ '{0:.2f}'.format(img.maxTemp) }}&deg;C</td>"
+                      +  "<td>{{ '{0:.2f}'.format(img.minTemp) }}&deg;C</td>"
+                      +  "<td>{{ '{0:.2f}'.format(img.averageTemp) }}&deg;C</td>"
                   +  "</tr>"
               +  "</table>");
 
@@ -62,6 +67,10 @@
       // using a DOM element as default marker color can't be changed
       var el = document.createElement('div');
       el.id = 'marker';
+
+      {% if img.maxTemp >= 60:%}
+          el.style.background = 'red';
+      {% endif %}
 
       var coordinates = [{{img.longitude}}, {{img.latitude}}]
       // create the marker

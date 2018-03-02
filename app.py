@@ -52,7 +52,7 @@ class ImageData(db.Model):
 #   in pixels for the tiff file.  If built in max, min, and mean are runtimes of O(n)
 #   then the runtime would be O(i*(wh^2)) so it would be faster to calculate the max,
 #   min, and average while looping over the pixels
-def pixels(tifDir, jpgDir):
+def get_image_data(tifDir, jpgDir):
     # T denotes tif variable, J denotes jpg variable
     # Loop over tiff files
     for fT in os.listdir(tifDir):
@@ -171,7 +171,7 @@ def data():
 # setting img analysis route
 @app.route('/post_imgs')
 def post_imgs():
-    pixels(tifDir, jpgDir)
+    get_image_data(tifDir, jpgDir)
     return redirect(url_for('index'))
 
 # running main application
