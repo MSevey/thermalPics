@@ -12,16 +12,18 @@
       <th>Average</th>
       <th>Latitude</th>
       <th>Longitude</th>
-      {% for image in images %}
+      {% for img in imgs %}
           <tr>
-            <td>{{image.id}}</td>
-            <td>{{image.maxTemp}}</td>
-            <td>{{image.minTemp}}</td>
-            <td>{{image.averageTemp}}</td>
-            <td>{{image.latitude}}</td>
-            <td>{{image.longitude}}</td>
+            <td>{{img.id}}</td>
+            <td>{{img.name}}</td>
+            <td>{{img.maxTemp}}</td>
+            <td>{{img.minTemp}}</td>
+            <td>{{img.averageTemp}}</td>
+            <td>{{img.latitude}}</td>
+            <td>{{img.longitude}}</td>
           </tr>
       {% endfor %}
   </table>
+  {{function()}}
   </body>
 </html>

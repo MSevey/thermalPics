@@ -15,7 +15,9 @@ Raptor Maps Inc (c) 2017
 
 
 Steps:
-1) read images, both jgp and tiff format.  get temps from tiff and GPS info from jpg.
+-read images, both jgp and tiff format.  get temps from tiff and GPS info from jpg.
   store information in database
 
-2) display images as pins on a map 
+-display images as pins on a map
+
+-update Image model to have column of name 
