@@ -5,25 +5,8 @@
     <title>Thermal Picture Analyzer</title>
   </head>
   <body>
-    <table>
-      <th>ID</th>
-      <th>Max</th>
-      <th>Min</th>
-      <th>Average</th>
-      <th>Latitude</th>
-      <th>Longitude</th>
-      {% for img in imgs %}
-          <tr>
-            <td>{{img.id}}</td>
-            <td>{{img.name}}</td>
-            <td>{{img.maxTemp}}</td>
-            <td>{{img.minTemp}}</td>
-            <td>{{img.averageTemp}}</td>
-            <td>{{img.latitude}}</td>
-            <td>{{img.longitude}}</td>
-          </tr>
-      {% endfor %}
-  </table>
-  <a href="{{url_for('post_imgs')}}">Analyze images</a>
+    Time for some maps
+    <br>
+    <a href="{{url_for('data')}}">Look at the data</a>
   </body>
 </html>
