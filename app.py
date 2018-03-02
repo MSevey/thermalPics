@@ -3,6 +3,8 @@ from flask import Flask
 from flask import request, redirect, render_template, url_for
 # Database
 from flask_sqlalchemy import SQLAlchemy
+# images
+from PIL import Image
 
 # initializing app and configuring
 app = Flask(__name__)
