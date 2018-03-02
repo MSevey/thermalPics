@@ -159,8 +159,9 @@ def _convert_to_degress(value):
 # setting root route
 @app.route('/')
 def index():
+    imgs = ImageData.query.all()
     mapAPI = configvars.mapbox_public_API
-    return render_template('index.html', mapAPI=mapAPI)
+    return render_template('index.html', mapAPI=mapAPI, imgs=imgs)
 
 @app.route('/data')
 def data():
