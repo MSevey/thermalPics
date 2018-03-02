@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+  </head>
+  <body>
+    <table>
+      <th>ID</th>
+      <th>Max</th>
+      <th>Min</th>
+      <th>Average</th>
+      <th>Latitude</th>
+      <th>Longitude</th>
+      {% for image in images %}
+          <tr>
+            <td>{{image.id}}</td>
+            <td>{{image.maxTemp}}</td>
+            <td>{{image.minTemp}}</td>
+            <td>{{image.averageTemp}}</td>
+            <td>{{image.latitude}}</td>
+            <td>{{image.longitude}}</td>
+          </tr>
+      {% endfor %}
+  </table>
+  </body>
+</html>

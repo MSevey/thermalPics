@@ -25,6 +25,8 @@ class Image(db.Model):
         self.maxTemp = maxTemp
         self.minTemp = minTemp
         self.averageTemp = averageTemp
+        self.latitude = latitude
+        self.longitude = longitude
 
     def __repr__(self):
         return "<Imagejpg %r>" % self.id
@@ -33,7 +35,9 @@ class Image(db.Model):
 # setting route route
 @app.route('/')
 def index():
-    return 'raptor maps challenge'
+    images = Image.query.all()
+    return render_template('index.html', Image=Image)
+
 
 # running main application
 if __name__ == "__main__":
