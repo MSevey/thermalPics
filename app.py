@@ -6,6 +6,7 @@ from flask_sqlalchemy import SQLAlchemy
 # images
 from PIL import Image
 import os
+import numpy as np
 
 # initializing app and configuring
 app = Flask(__name__)
@@ -72,7 +73,7 @@ def pixels():
     # store files to database if doesn't exit
     # pixel = i.getpixel(coordinate)
     # exifData = i._getexif()
-    return temps;
+    return max(temps), min(temps), np.mean(temps);
 
 # pixels('./static/imagesRM/jpg/DJI_0034.jpg')
 
