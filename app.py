@@ -8,6 +8,8 @@ from PIL import Image
 from PIL.ExifTags import TAGS, GPSTAGS
 import os
 import numpy as np
+# env variables
+import configvars
 
 # initializing app and configuring
 app = Flask(__name__)
@@ -157,7 +159,8 @@ def _convert_to_degress(value):
 # setting root route
 @app.route('/')
 def index():
-    return render_template('index.html')
+    mapAPI = configvars.mapbox_public_API
+    return render_template('index.html', mapAPI=mapAPI)
 
 @app.route('/data')
 def data():

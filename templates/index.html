@@ -2,11 +2,21 @@
 <html>
   <head>
     <meta charset="utf-8">
+    <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.44.1/mapbox-gl.js'></script>
+    <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.44.1/mapbox-gl.css' rel='stylesheet' />
     <title>Thermal Picture Analyzer</title>
   </head>
   <body>
     Time for some maps
-    <br>
     <a href="{{url_for('data')}}">Look at the data</a>
+    <br>
+    <div id='map' style='width: 400px; height: 300px;'></div>
+    <script>
+      mapboxgl.accessToken = '{{mapAPI}}';
+      var map = new mapboxgl.Map({
+          container: 'map',
+          style: 'mapbox://styles/mapbox/streets-v9'
+      });
+    </script>
   </body>
 </html>
