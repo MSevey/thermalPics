@@ -26,13 +26,13 @@ class ImageData(db.Model):
     longitude = db.Column(db.Float)
     latitude = db.Column(db.Float)
 
-    def __init__(self, maxTemp, minTemp, averageTemp):
+    def __init__(self, name, maxTemp, minTemp, averageTemp):
         self.name = name
         self.maxTemp = maxTemp
         self.minTemp = minTemp
         self.averageTemp = averageTemp
-        self.latitude = latitude
-        self.longitude = longitude
+        # self.latitude = latitude
+        # self.longitude = longitude
 
     def __repr__(self):
         return "<ImageData %r>" % self.id
@@ -50,7 +50,7 @@ def pixels():
     #         iT = Image.open(fT)
     iT = Image.open('./static/imagesRM/tif/DJI_0034.tif')
     # fnT, fextT = os.path.splitext(fT)
-    fnT, fextT = os.path.splitext('./static/imagesRM/tif/DJI_0034.tif')
+    fnT, fextT = os.path.splitext(os.path.basename('./static/imagesRM/tif/DJI_0034.tif'))
             # # Loop over jpg files to find cooresponding file
             # for fJ in os.listdir('./static/imagesRM/jpg/'):
             #     # verifying it is a jpg file
@@ -68,12 +68,16 @@ def pixels():
         for y in range(h):
             temps.append(iT.getpixel((x,y)))
 
+    img = ImageData(fnT, max(temps), min(temps), np.mean(temps))
+    db.session.add(img)
+    db.session.commit()
+
     # find max, min, average temps from tiff files
     # find GPS coordinates from jpg files
     # store files to database if doesn't exit
     # pixel = i.getpixel(coordinate)
     # exifData = i._getexif()
-    return max(temps), min(temps), np.mean(temps);
+    return ;
 
 # pixels('./static/imagesRM/jpg/DJI_0034.jpg')
 
@@ -92,11 +96,17 @@ def pixels():
 
 
 
-# setting route route
+# setting root route
 @app.route('/')
 def index():
     imgs = ImageData.query.all()
-    return render_template('index.html', imgs=imgs, function=pixels)
+    return render_template('index.html', imgs=imgs)
+
+# setting img analysis route
+@app.route('/post_imgs')
+def post_imgs():
+    pixels()
+    return redirect(url_for('index'))
 
 
 # running main application
