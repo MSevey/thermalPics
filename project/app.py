@@ -157,21 +157,17 @@ def _convert_to_degress(value):
 
 
 # setting root route
+# map of pointers
 @app.route('/')
 def index():
-    return render_template('index.html')
+    imgs = ImageData.query.all()
+    mapAPI = configvars.mapbox_public_API
+    return render_template('index.html', mapAPI=mapAPI, imgs=imgs)
 
 # setting hello route for React testing
 @app.route('/hello')
 def hello():
     return render_template('hello.html')
-
-#  setting route for map of pointers
-@app.route('/map')
-def map():
-    imgs = ImageData.query.all()
-    mapAPI = configvars.mapbox_public_API
-    return render_template('map.html', mapAPI=mapAPI, imgs=imgs)
 
 # setting route for displaying data
 @app.route('/data')

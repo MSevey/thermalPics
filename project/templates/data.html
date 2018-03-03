@@ -2,12 +2,14 @@
 <html>
   <head>
     <meta charset="utf-8">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='bower_components/bootstrap/dist/css/bootstrap.min.css') }}">
     <title>Thermal Picture Analyzer</title>
   </head>
   <body>
-    <a href="{{url_for('map')}}">Home</a>
-    <table>
+    <a href="{{url_for('index')}}">Home</a>
+    <table class="table table-striped">
       <th>ID</th>
+      <th>File Name</th>
       <th>Max</th>
       <th>Min</th>
       <th>Average</th>
