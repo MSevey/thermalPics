@@ -1,3 +1,14 @@
 /static/imagesRM
 configvars.py
-configvars.pyc
+
+.git
+env
+
+*.DS_Store
+*.pyc
+.git
+
+node_modules/
+npm-debug.log
+bower_components/
+.module-cache

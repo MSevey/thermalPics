@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='bower_components/bootstrap/dist/css/bootstrap.min.css') }}">
+    <title>Thermal Picture Analyzer</title>
+  </head>
+  <body>
+    <a href="{{url_for('index')}}">Home</a>
+    <table class="table table-striped">
+      <th>ID</th>
+      <th>File Name</th>
+      <th>Max</th>
+      <th>Min</th>
+      <th>Average</th>
+      <th>Latitude</th>
+      <th>Longitude</th>
+      {% for img in imgs %}
+          <tr>
+            <td>{{img.id}}</td>
+            <td>{{img.name}}</td>
+            <td>{{img.maxTemp}}</td>
+            <td>{{img.minTemp}}</td>
+            <td>{{img.averageTemp}}</td>
+            <td>{{img.latitude}}</td>
+            <td>{{img.longitude}}</td>
+          </tr>
+      {% endfor %}
+  </table>
+  <a href="{{url_for('post_imgs')}}">Analyze images</a>
+  </body>
+</html>
