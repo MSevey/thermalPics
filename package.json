@@ -1,0 +1,22 @@
+{
+  "name": "thermal_pics",
+  "version": "1.0.0",
+  "description": "This app takes jpg and tif images and extracts temperature and gps data to then put on a map",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MSevey/thermalPics.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/MSevey/thermalPics/issues"
+  },
+  "homepage": "https://github.com/MSevey/thermalPics#readme",
+  "devDependencies": {
+    "bower": "^1.8.2"
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "name": "thermal_pics",
+  "homepage": "https://github.com/MSevey/thermalPics",
+  "authors": [
+    "Matthew Sevey <mjsevey@gmail.com>"
+  ],
+  "description": "This app takes jpg and tif images and extracts temperature and gps data to then put on a map",
+  "main": "",
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "bootstrap": "^3.3.6",
+    "react": "^15.1.0"
+  }
+}
