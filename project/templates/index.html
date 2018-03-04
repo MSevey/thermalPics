@@ -1,6 +1,14 @@
 {% include 'header.html' %}
+  <div class="row">
+    <div class="col-xs-10 col-xs-offset-1 text-center">
+      <h4>Legend</h4>
+      <p>Blue: Default Yellow: Average > Overall Average Red: Max > 60&deg;C</p>
+    </div>
+  </div>
 
-  <div id='map' class="col-xs-10 col-xs-offset-1"></div>
+  <div class="row">
+    <div id='map' class="col-xs-10 col-xs-offset-1"></div>
+  </div>
 
   <script>
     mapboxgl.accessToken = '{{mapAPI}}';
