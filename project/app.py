@@ -173,7 +173,7 @@ def index():
 # setting hello route for React testing
 @app.route('/hello')
 def hello():
-    return render_template('hello.html')
+    return render_template('hello.html', imgs=imgs, max=overallMaxTemp, min=overallMinTemp, avg=overallAvgTemp)
 
 # setting route for displaying data
 @app.route('/data')
