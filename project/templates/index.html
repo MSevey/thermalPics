@@ -13,15 +13,15 @@
     var iconBase = 'http://maps.google.com/mapfiles/ms/icons/';
     var icons = {
       red: {
-        name: 'Max above 60',
+        name: 'Max Temp > 60&deg;C',
         icon: iconBase + 'red-dot.png'
       },
-      yellow: {
-        name: 'Average above overall average',
-        icon: iconBase + 'yellow-dot.png'
-      },
+      // yellow: {
+      //   name: 'Average Temp > Overall Average Temp',
+      //   icon: iconBase + 'yellow-dot.png'
+      // },
       blue: {
-        name: 'Default',
+        name: 'Max Temp < 60&deg;C',
         icon: iconBase + 'blue-dot.png'
       }
     };
@@ -62,8 +62,8 @@
         // Checking for max temp over 60 degrees C
         if ({{img.maxTemp}} >= 60) {
           color = icons['red'].icon;
-        } else if ({{img.averageTemp}} > {{avg}}) {
-          color = icons['yellow'].icon;
+        // } else if ({{img.averageTemp}} > {{avg}}) {
+        //   color = icons['yellow'].icon;
         } else {
           color = icons['blue'].icon;
         }
