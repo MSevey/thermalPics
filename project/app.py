@@ -155,12 +155,13 @@ def _convert_to_degress(value):
 
     return d + (m / 60.0) + (s / 3600.0)
 
+# querying images
+imgs = ImageData.query.all()
 
 # setting root route
 # map of pointers
 @app.route('/')
 def index():
-    imgs = ImageData.query.all()
     mapAPI = configvars.mapbox_public_API
     return render_template('index.html', mapAPI=mapAPI, imgs=imgs)
 
@@ -172,13 +173,13 @@ def hello():
 # setting route for displaying data
 @app.route('/data')
 def data():
-    imgs = ImageData.query.all()
     return render_template('data.html', imgs=imgs)
 
 # setting img analysis route
 @app.route('/post_imgs')
 def post_imgs():
-    get_image_data(tifDir, jpgDir)
+    if imgs is None:
+        get_image_data(tifDir, jpgDir)
     return redirect(url_for('data'))
 
 # running main application
