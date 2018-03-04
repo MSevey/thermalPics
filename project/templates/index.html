@@ -1,53 +1,44 @@
 {% include 'header.html' %}
 
   <div id='map' class="col-xs-10 col-xs-offset-1"></div>
-
   <script>
-    mapboxgl.accessToken = '{{mapAPI}}';
+    function initMap() {
 
-    // var monument = [-77.0353, 38.8895];
-    var map = new mapboxgl.Map({
-        container: 'map',
-        style: 'mapbox://styles/mapbox/streets-v9',
-        // found average long and lat from SQL query of the database
-        center: [-100.896880335385, 51.7557067921408],
-        zoom: 15
-    });
+          var map = new google.maps.Map(document.getElementById('map'), {
+            zoom: 15,
+            // center: {lat: -28.024, lng: 140.887}
+            center: {lat: 51.7557067921408, lng: -100.896880335385}
+          });
 
-    {% for img in imgs %}
-      // create the popup
-      var popup = new mapboxgl.Popup()
-        .setHTML("<table class='popup-table'>"
-                  +  "<th>Max Temp</th>"
-                  +  "<th>Min Temp</th>"
-                  +  "<th>Average Temp</th>"
-                  +  "<tr>"
-                      +  "<td>{{ '{0:.2f}'.format(img.maxTemp) }}&deg;C</td>"
-                      +  "<td>{{ '{0:.2f}'.format(img.minTemp) }}&deg;C</td>"
-                      +  "<td>{{ '{0:.2f}'.format(img.averageTemp) }}&deg;C</td>"
-                  +  "</tr>"
-              +  "</table>");
+          // Add some markers to the map.
+          // Note: The code uses the JavaScript Array.prototype.map() method to
+          // create an array of markers based on a given "locations" array.
+          // The map() method here has nothing to do with the Google Maps API.
+          iconBase = 'http://maps.google.com/mapfiles/ms/icons/';
+          var markers = locations.map(function(location) {
+            return new google.maps.Marker({
+              position: location,
+              icon: iconBase + 'blue-dot.png'
+            });
+          });
 
-      // create DOM element for the marker
-      // using a DOM element as default marker color can't be changed
-      var el = document.createElement('div');
-      el.id = 'marker';
+          // Add a marker clusterer to manage the markers.
+          var markerCluster = new MarkerClusterer(map, markers,
+              {imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m'});
+        }
 
-      {% if img.averageTemp >= avg:%}
-          el.style.background = 'yellow';
-      {% elif img.maxTemp >= 60:%}
-          el.style.background = 'red';
-      {% endif %}
+        var locations = [];
+        {% for img in imgs %}
+            locations.push({lat: {{img.latitude}}, lng: {{img.longitude}}});
+        {% endfor %}
 
-      var coordinates = [{{img.longitude}}, {{img.latitude}}]
-      // create the marker
-      new mapboxgl.Marker(el)
-        .setLngLat(coordinates)
-        .setPopup(popup) // sets a popup on this marker
-        .addTo(map);
+    </script>
+    <script src="https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/markerclusterer.js">
+    </script>
+    <script async defer
+    src="https://maps.googleapis.com/maps/api/js?key={{mapAPI}}&callback=initMap">
+    </script>
 
-    {% endfor %}
 
-  </script>
 
 {% include 'footer.html' %}

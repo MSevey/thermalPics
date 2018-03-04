@@ -166,8 +166,7 @@ overallAvgTemp = np.mean(ImageData.query.with_entities(ImageData.averageTemp).al
 # map of pointers
 @app.route('/')
 def index():
-    mapAPI = configvars.mapbox_public_API
-    return render_template('index.html', mapAPI=mapAPI, imgs=imgs, avg=overallAvgTemp)
+    return render_template('index.html', mapAPI=configvars.google_maps_API, imgs=imgs, avg=overallAvgTemp)
 
 # setting hello route for React testing
 @app.route('/hello')

@@ -32,5 +32,42 @@
       );
 
     </script>
+    <script>
+
+      {% for img in imgs %}
+        // create the popup
+        var popup = new mapboxgl.Popup()
+          .setHTML("<table class='popup-table'>"
+                    +  "<th>Max Temp</th>"
+                    +  "<th>Min Temp</th>"
+                    +  "<th>Average Temp</th>"
+                    +  "<tr>"
+                        +  "<td>{{ '{0:.2f}'.format(img.maxTemp) }}&deg;C</td>"
+                        +  "<td>{{ '{0:.2f}'.format(img.minTemp) }}&deg;C</td>"
+                        +  "<td>{{ '{0:.2f}'.format(img.averageTemp) }}&deg;C</td>"
+                    +  "</tr>"
+                +  "</table>");
+
+        // create DOM element for the marker
+        // using a DOM element as default marker color can't be changed
+        var el = document.createElement('div');
+        el.id = 'marker';
+
+        {% if img.averageTemp >= avg:%}
+            el.style.background = 'yellow';
+        {% elif img.maxTemp >= 60:%}
+            el.style.background = 'red';
+        {% endif %}
+
+        var coordinates = [{{img.longitude}}, {{img.latitude}}]
+        // create the marker
+        new mapboxgl.Marker(el)
+          .setLngLat(coordinates)
+          .setPopup(popup) // sets a popup on this marker
+          .addTo(map);
+
+      {% endfor %}
+
+    </script>
   </body>
 </html>
