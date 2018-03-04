@@ -1,46 +1,113 @@
 {% include 'header.html' %}
 
   <div id='map' class="col-xs-10 col-xs-offset-1"></div>
-  <script>
+  <script type="text/javascript">
+    // referenced http://jsfiddle.net/ZFvDV/
+    // referenced https://developers.google.com/maps/documentation/javascript/
+    var infos = [];
+
     function initMap() {
-        var map = new google.maps.Map(document.getElementById('map'), {
-          zoom: 15,
-          // center based on average lat and long
-          center: {lat: {{lat}}, lng: {{long}}}
-        });
 
-        // Add some markers to the map.
-        // Note: The code uses the JavaScript Array.prototype.map() method to
-        // create an array of markers based on a given "locations" array.
-        // The map() method here has nothing to do with the Google Maps API.
-        var iconBase = 'http://maps.google.com/mapfiles/ms/icons/';
-        var markers = [];
-        {% for img in imgs %}
-            if ({{img.maxTemp}} >= 60) {
-              var color = 'red-dot.png';
-            } else {
-              var color = 'blue-dot.png';
-            }
-            var marker =  new google.maps.Marker({
-                position: {lat: {{img.latitude}}, lng: {{img.longitude}}},
-                icon: iconBase + color
-            });
-            markers.push(marker);
-        {% endfor %}
+      var mapOptions = {
+        center: new google.maps.LatLng({{lat}}, {{long}}),
+        zoom: 15
+      };
 
-        // Add a marker clusterer to manage the markers.
-        var markerCluster = new MarkerClusterer(map, markers,
-            {imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m'});
+      var map = new google.maps.Map(document.getElementById("map"),mapOptions);
+
+      setMarkers(map);
 
     }
 
+    // function setMarkers(map,locations){
+    function setMarkers(map){
 
-    </script>
-    <script src="https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/markerclusterer.js">
-    </script>
-    <script async defer
-    src="https://maps.googleapis.com/maps/api/js?key={{mapAPI}}&callback=initMap">
-    </script>
+      var marker, i;
+      var markers = [];
+      var iconBase = 'http://maps.google.com/mapfiles/ms/icons/';
+
+      {% for img in imgs %}
+
+        // Checking for max temp over 60 degrees C
+        if ({{img.maxTemp}} >= 60) {
+          var color = 'red-dot.png';
+        } else {
+          var color = 'blue-dot.png';
+        }
+
+        latlngset = new google.maps.LatLng({{img.latitude}}, {{img.longitude}});
+
+        var marker = new google.maps.Marker({
+          map: map,
+          icon: iconBase + color,
+          title: '{{img.name}}',
+          position: latlngset
+        });
+
+        markers.push(marker);
+
+        map.setCenter(marker.getPosition());
+
+
+        var content = "<table class='popup-table table'>"
+                  +  "<th>Max Temp</th>"
+                  +  "<th>Min Temp</th>"
+                  +  "<th>Average Temp</th>"
+                  +  "<tr>"
+                      +  "<td>{{ '{0:.2f}'.format(img.maxTemp) }}&deg;C</td>"
+                      +  "<td>{{ '{0:.2f}'.format(img.minTemp) }}&deg;C</td>"
+                      +  "<td>{{ '{0:.2f}'.format(img.averageTemp) }}&deg;C</td>"
+                  +  "</tr>"
+              +  "</table>";
+
+        var infowindow = new google.maps.InfoWindow();
+
+
+        google.maps.event.addListener(marker,'click', (function(marker,content,infowindow){
+          return function() {
+
+            /* close the previous info-window */
+            closeInfos();
+
+            infowindow.setContent(content);
+            infowindow.open(map,marker);
+
+            /* keep the handle, in order to close it on next click event */
+            infos[0]=infowindow;
+
+          };
+        })(marker,content,infowindow));
+
+      {% endfor %}
+
+      // Add a marker clusterer to manage the markers.
+      var markerCluster = new MarkerClusterer(map, markers,
+          {imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m'});
+
+    }
+
+    // Closing info windows when clicking on new icon
+    function closeInfos(){
+      if(infos.length > 0){
+
+        /* detach the info-window from the marker ... undocumented in the API docs */
+        infos[0].set("marker", null);
+
+        /* and close it */
+        infos[0].close();
+
+        /* blank the array */
+        infos.length = 0;
+      }
+    }
+
+  </script>
+
+  <script src="https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/markerclusterer.js">
+  </script>
+  <script async defer
+  src="https://maps.googleapis.com/maps/api/js?key={{mapAPI}}&callback=initMap">
+  </script>
 
 
 
