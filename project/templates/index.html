@@ -1,7 +1,13 @@
 {% include 'header.html' %}
 
-  <div id='map' class="col-xs-10 col-xs-offset-1"></div>
-  <div id="legend"><h3>Legend</h3></div>
+
+  <!-- <div id='map' class="col-xs-12"></div> -->
+  <div id='map' class="col-xs-12" style="width: 90%;"></div>
+  <div id='legend'  style="font-family: Arial, sans-serif;
+  background: #fff;
+  padding: 10px;
+  margin: 10px;
+  border: 3px solid #000;"><h3 style="margin-top: 0;">Legend</h3></div>
   <script type="text/javascript">
     // referenced http://jsfiddle.net/ZFvDV/
     // referenced https://developers.google.com/maps/documentation/javascript/
@@ -39,7 +45,7 @@
         var name = type.name;
         var icon = type.icon;
         var div = document.createElement('div');
-        div.innerHTML = '<img src="' + icon + '"> ' + name;
+        div.innerHTML = '<img src="' + icon + '" style="vertical-align: middle;"> ' + name;
         legend.appendChild(div);
       }
 
@@ -132,11 +138,8 @@
 
   </script>
 
-  <script src="https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/markerclusterer.js">
-  </script>
-  <script async defer
-  src="https://maps.googleapis.com/maps/api/js?key={{mapAPI}}&callback=initMap">
-  </script>
+  <script src="https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/markerclusterer.js"></script>
+  <script async defer src="https://maps.googleapis.com/maps/api/js?key={{mapAPI}}&callback=initMap"></script>
 
 
 
