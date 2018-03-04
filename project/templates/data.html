@@ -1,11 +1,5 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="utf-8">
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='bower_components/bootstrap/dist/css/bootstrap.min.css') }}">
-    <title>Thermal Picture Analyzer</title>
-  </head>
-  <body>
+{% include 'header.html' %}
+
     <a href="{{url_for('index')}}">Home</a>
     <table class="table table-striped">
       <th>ID</th>
@@ -28,5 +22,5 @@
       {% endfor %}
   </table>
   <a href="{{url_for('post_imgs')}}">Analyze images</a>
-  </body>
-</html>
+
+{% include 'footer.html' %}
