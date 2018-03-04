@@ -33,7 +33,9 @@
       var el = document.createElement('div');
       el.id = 'marker';
 
-      {% if img.maxTemp >= 60:%}
+      {% if img.averageTemp >= avg:%}
+          el.style.background = 'yellow';
+      {% elif img.maxTemp >= 60:%}
           el.style.background = 'red';
       {% endif %}
 

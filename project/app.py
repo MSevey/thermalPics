@@ -3,6 +3,7 @@ from flask import Flask
 from flask import request, redirect, render_template, url_for
 # Database
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import func
 # images
 from PIL import Image
 from PIL.ExifTags import TAGS, GPSTAGS
@@ -157,13 +158,16 @@ def _convert_to_degress(value):
 
 # querying images
 imgs = ImageData.query.all()
+overallMaxTemp = max(ImageData.query.with_entities(ImageData.maxTemp).all())
+overallMinTemp = min(ImageData.query.with_entities(ImageData.minTemp).all())
+overallAvgTemp = np.mean(ImageData.query.with_entities(ImageData.averageTemp).all())
 
 # setting root route
 # map of pointers
 @app.route('/')
 def index():
     mapAPI = configvars.mapbox_public_API
-    return render_template('index.html', mapAPI=mapAPI, imgs=imgs)
+    return render_template('index.html', mapAPI=mapAPI, imgs=imgs, avg=overallAvgTemp)
 
 # setting hello route for React testing
 @app.route('/hello')
@@ -173,7 +177,7 @@ def hello():
 # setting route for displaying data
 @app.route('/data')
 def data():
-    return render_template('data.html', imgs=imgs)
+    return render_template('data.html', imgs=imgs, max=overallMaxTemp, min=overallMinTemp, avg=overallAvgTemp)
 
 # setting img analysis route
 @app.route('/post_imgs')

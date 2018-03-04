@@ -1,5 +1,20 @@
 {% include 'header.html' %}
+    <div class="jumbotron">
+      <h1>Image Data</h1>
+      <table class="table">
+        <th>Overall Max</th>
+        <th>Overall Min</th>
+        <th>Overall Average</th>
+        <tr>
+          <td>{{'{0:.2f}'.format(max[0])}}&deg;C</td>
+          <td>{{'{0:.2f}'.format(min[0])}}&deg;C</td>
+          <td>{{'{0:.2f}'.format(avg)}}&deg;C</td>
+        </tr>
+      </table>
+      <p><a class="btn btn-md btn-success" href="{{url_for('post_imgs')}}" role="button">Analyze images</a></p>
+    </div>
 
+    <h3>All Image Data</h3>
     <table class="table table-striped">
       <th>ID</th>
       <th>File Name</th>
@@ -12,13 +27,13 @@
           <tr>
             <td>{{img.id}}</td>
             <td>{{img.name}}</td>
-            <td>{{img.maxTemp}}</td>
-            <td>{{img.minTemp}}</td>
-            <td>{{img.averageTemp}}</td>
-            <td>{{img.latitude}}</td>
-            <td>{{img.longitude}}</td>
+            <td>{{'{0:.2f}'.format(img.maxTemp)}}&deg;C</td>
+            <td>{{'{0:.2f}'.format(img.minTemp)}}&deg;C</td>
+            <td>{{'{0:.2f}'.format(img.averageTemp)}}&deg;C</td>
+            <td>{{'{0:.2f}'.format(img.latitude)}}&deg;</td>
+            <td>{{'{0:.2f}'.format(img.longitude)}}&deg;</td>
           </tr>
       {% endfor %}
-  </table>
+    </table>
 
 {% include 'footer.html' %}
