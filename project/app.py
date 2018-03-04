@@ -161,12 +161,14 @@ imgs = ImageData.query.all()
 overallMaxTemp = max(ImageData.query.with_entities(ImageData.maxTemp).all())
 overallMinTemp = min(ImageData.query.with_entities(ImageData.minTemp).all())
 overallAvgTemp = np.mean(ImageData.query.with_entities(ImageData.averageTemp).all())
+avgLat = np.mean(ImageData.query.with_entities(ImageData.latitude).all())
+avgLong = np.mean(ImageData.query.with_entities(ImageData.longitude).all())
 
 # setting root route
 # map of pointers
 @app.route('/')
 def index():
-    return render_template('index.html', mapAPI=configvars.google_maps_API, imgs=imgs, avg=overallAvgTemp)
+    return render_template('index.html', mapAPI=configvars.google_maps_API, imgs=imgs, avg=overallAvgTemp, lat=avgLat, long=avgLong)
 
 # setting hello route for React testing
 @app.route('/hello')

@@ -3,34 +3,37 @@
   <div id='map' class="col-xs-10 col-xs-offset-1"></div>
   <script>
     function initMap() {
+        var map = new google.maps.Map(document.getElementById('map'), {
+          zoom: 15,
+          // center based on average lat and long
+          center: {lat: {{lat}}, lng: {{long}}}
+        });
 
-          var map = new google.maps.Map(document.getElementById('map'), {
-            zoom: 15,
-            // center: {lat: -28.024, lng: 140.887}
-            center: {lat: 51.7557067921408, lng: -100.896880335385}
-          });
-
-          // Add some markers to the map.
-          // Note: The code uses the JavaScript Array.prototype.map() method to
-          // create an array of markers based on a given "locations" array.
-          // The map() method here has nothing to do with the Google Maps API.
-          iconBase = 'http://maps.google.com/mapfiles/ms/icons/';
-          var markers = locations.map(function(location) {
-            return new google.maps.Marker({
-              position: location,
-              icon: iconBase + 'blue-dot.png'
-            });
-          });
-
-          // Add a marker clusterer to manage the markers.
-          var markerCluster = new MarkerClusterer(map, markers,
-              {imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m'});
-        }
-
-        var locations = [];
+        // Add some markers to the map.
+        // Note: The code uses the JavaScript Array.prototype.map() method to
+        // create an array of markers based on a given "locations" array.
+        // The map() method here has nothing to do with the Google Maps API.
+        var iconBase = 'http://maps.google.com/mapfiles/ms/icons/';
+        var markers = [];
         {% for img in imgs %}
-            locations.push({lat: {{img.latitude}}, lng: {{img.longitude}}});
+            if ({{img.maxTemp}} >= 60) {
+              var color = 'red-dot.png';
+            } else {
+              var color = 'blue-dot.png';
+            }
+            var marker =  new google.maps.Marker({
+                position: {lat: {{img.latitude}}, lng: {{img.longitude}}},
+                icon: iconBase + color
+            });
+            markers.push(marker);
         {% endfor %}
+
+        // Add a marker clusterer to manage the markers.
+        var markerCluster = new MarkerClusterer(map, markers,
+            {imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m'});
+
+    }
+
 
     </script>
     <script src="https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/markerclusterer.js">
