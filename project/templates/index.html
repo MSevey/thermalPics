@@ -1,10 +1,26 @@
 {% include 'header.html' %}
 
   <div id='map' class="col-xs-10 col-xs-offset-1"></div>
+  <div id="legend"><h3>Legend</h3></div>
   <script type="text/javascript">
     // referenced http://jsfiddle.net/ZFvDV/
     // referenced https://developers.google.com/maps/documentation/javascript/
     var infos = [];
+    var iconBase = 'http://maps.google.com/mapfiles/ms/icons/';
+    var icons = {
+      red: {
+        name: 'Max above 60',
+        icon: iconBase + 'red-dot.png'
+      },
+      yellow: {
+        name: 'Average above overall average',
+        icon: iconBase + 'yellow-dot.png'
+      },
+      blue: {
+        name: 'Default',
+        icon: iconBase + 'blue-dot.png'
+      }
+    };
 
     function initMap() {
 
@@ -15,31 +31,44 @@
 
       var map = new google.maps.Map(document.getElementById("map"),mapOptions);
 
-      setMarkers(map);
+      setMarkers(map, icons);
+
+      var legend = document.getElementById('legend');
+      for (var key in icons) {
+        var type = icons[key];
+        var name = type.name;
+        var icon = type.icon;
+        var div = document.createElement('div');
+        div.innerHTML = '<img src="' + icon + '"> ' + name;
+        legend.appendChild(div);
+      }
+
+      map.controls[google.maps.ControlPosition.RIGHT_BOTTOM].push(legend);
 
     }
 
     // function setMarkers(map,locations){
-    function setMarkers(map){
+    function setMarkers(map, icons){
 
-      var marker, i;
+      var marker, i, color;
       var markers = [];
-      var iconBase = 'http://maps.google.com/mapfiles/ms/icons/';
 
       {% for img in imgs %}
 
         // Checking for max temp over 60 degrees C
         if ({{img.maxTemp}} >= 60) {
-          var color = 'red-dot.png';
+          color = icons['red'].icon;
+        } else if ({{img.averageTemp}} > {{avg}}) {
+          color = icons['yellow'].icon;
         } else {
-          var color = 'blue-dot.png';
+          color = icons['blue'].icon;
         }
 
         latlngset = new google.maps.LatLng({{img.latitude}}, {{img.longitude}});
 
         var marker = new google.maps.Marker({
           map: map,
-          icon: iconBase + color,
+          icon: color,
           title: '{{img.name}}',
           position: latlngset
         });

@@ -156,7 +156,7 @@ def _convert_to_degress(value):
 
     return d + (m / 60.0) + (s / 3600.0)
 
-# querying images
+# querying images and data
 imgs = ImageData.query.all()
 overallMaxTemp = max(ImageData.query.with_entities(ImageData.maxTemp).all())
 overallMinTemp = min(ImageData.query.with_entities(ImageData.minTemp).all())
