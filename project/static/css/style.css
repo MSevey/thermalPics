@@ -1,0 +1,16 @@
+/* Styling for map */
+#marker {
+    background-color: blue;
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+.mapboxgl-popup {
+    max-width: 200px;
+}
+
+.popup-table {
+  text-align: center;
+}
