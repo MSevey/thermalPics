@@ -6,8 +6,7 @@ body {
 }
 
 /* Everything but the jumbotron gets side spacing for mobile first views */
-.header,
-.marketing{
+.header {
   padding-left: 15px;
   padding-right: 15px;
 }
@@ -44,26 +43,16 @@ body {
   padding: 14px 24px;
 }
 
-/* Supporting marketing content */
-.marketing {
-  margin: 40px 0;
-}
-.marketing p + h4 {
-  margin-top: 28px;
-}
-
 /* Responsive: Portrait tablets and up */
 @media screen and (min-width: 768px) {
   /* Remove the padding we set earlier */
-  .header,
-  .marketing{
-    padding-left: 0;
-    padding-right: 0;
-  }
   /* Space out the masthead */
   .header {
+    padding-left: 0;
+    padding-right: 0;
     margin-bottom: 30px;
   }
+
   /* Remove the bottom border on the jumbotron for visual effect */
   .jumbotron {
     border-bottom: 0;
@@ -71,22 +60,22 @@ body {
 }
 
 /* Styling for map */
-#map {
-  margin-bottom: 50px;
-}
+/* #map {
+  height: 90%;
+} */
 
-#marker {
-    background-color: blue;
-    width: 5px;
-    height: 5px;
-    border-radius: 50%;
-    cursor: pointer;
-}
-
-.mapboxgl-popup {
-    max-width: 200px;
-}
-
-.popup-table {
-  text-align: center;
-}
+/* #legend {
+  font-family: Arial, sans-serif;
+  background: #fff;
+  padding: 10px;
+  margin: 10px;
+  border: 3px solid #000;
+} */
+/*
+#legend h3 {
+  margin-top: 0;
+} */
+/*
+#legend img {
+  vertical-align: middle;
+} */

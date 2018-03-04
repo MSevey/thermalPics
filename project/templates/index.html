@@ -1,23 +1,90 @@
 {% include 'header.html' %}
 
-  <div id='map' class="col-xs-10 col-xs-offset-1"></div>
 
-  <script>
-    mapboxgl.accessToken = '{{mapAPI}}';
+  <!-- <div id='map' class="col-xs-12"></div> -->
+  <div id='map' class="col-xs-12" style="width: 90%;"></div>
+  <div id='legend'  style="font-family: Arial, sans-serif;
+  background: #fff;
+  padding: 10px;
+  margin: 10px;
+  border: 3px solid #000;"><h3 style="margin-top: 0;">Legend</h3></div>
+  <script type="text/javascript">
+    // referenced http://jsfiddle.net/ZFvDV/
+    // referenced https://developers.google.com/maps/documentation/javascript/
+    var infos = [];
+    var iconBase = 'http://maps.google.com/mapfiles/ms/icons/';
+    var icons = {
+      red: {
+        name: 'Max above 60',
+        icon: iconBase + 'red-dot.png'
+      },
+      yellow: {
+        name: 'Average above overall average',
+        icon: iconBase + 'yellow-dot.png'
+      },
+      blue: {
+        name: 'Default',
+        icon: iconBase + 'blue-dot.png'
+      }
+    };
 
-    // var monument = [-77.0353, 38.8895];
-    var map = new mapboxgl.Map({
-        container: 'map',
-        style: 'mapbox://styles/mapbox/streets-v9',
-        // found average long and lat from SQL query of the database
-        center: [-100.896880335385, 51.7557067921408],
+    function initMap() {
+
+      var mapOptions = {
+        center: new google.maps.LatLng({{lat}}, {{long}}),
         zoom: 15
-    });
+      };
 
-    {% for img in imgs %}
-      // create the popup
-      var popup = new mapboxgl.Popup()
-        .setHTML("<table class='popup-table'>"
+      var map = new google.maps.Map(document.getElementById("map"),mapOptions);
+
+      setMarkers(map, icons);
+
+      var legend = document.getElementById('legend');
+      for (var key in icons) {
+        var type = icons[key];
+        var name = type.name;
+        var icon = type.icon;
+        var div = document.createElement('div');
+        div.innerHTML = '<img src="' + icon + '" style="vertical-align: middle;"> ' + name;
+        legend.appendChild(div);
+      }
+
+      map.controls[google.maps.ControlPosition.RIGHT_BOTTOM].push(legend);
+
+    }
+
+    // function setMarkers(map,locations){
+    function setMarkers(map, icons){
+
+      var marker, i, color;
+      var markers = [];
+
+      {% for img in imgs %}
+
+        // Checking for max temp over 60 degrees C
+        if ({{img.maxTemp}} >= 60) {
+          color = icons['red'].icon;
+        } else if ({{img.averageTemp}} > {{avg}}) {
+          color = icons['yellow'].icon;
+        } else {
+          color = icons['blue'].icon;
+        }
+
+        latlngset = new google.maps.LatLng({{img.latitude}}, {{img.longitude}});
+
+        var marker = new google.maps.Marker({
+          map: map,
+          icon: color,
+          title: '{{img.name}}',
+          position: latlngset
+        });
+
+        markers.push(marker);
+
+        map.setCenter(marker.getPosition());
+
+
+        var content = "<table class='popup-table table'>"
                   +  "<th>Max Temp</th>"
                   +  "<th>Min Temp</th>"
                   +  "<th>Average Temp</th>"
@@ -26,28 +93,54 @@
                       +  "<td>{{ '{0:.2f}'.format(img.minTemp) }}&deg;C</td>"
                       +  "<td>{{ '{0:.2f}'.format(img.averageTemp) }}&deg;C</td>"
                   +  "</tr>"
-              +  "</table>");
+              +  "</table>";
 
-      // create DOM element for the marker
-      // using a DOM element as default marker color can't be changed
-      var el = document.createElement('div');
-      el.id = 'marker';
+        var infowindow = new google.maps.InfoWindow();
 
-      {% if img.averageTemp >= avg:%}
-          el.style.background = 'yellow';
-      {% elif img.maxTemp >= 60:%}
-          el.style.background = 'red';
-      {% endif %}
 
-      var coordinates = [{{img.longitude}}, {{img.latitude}}]
-      // create the marker
-      new mapboxgl.Marker(el)
-        .setLngLat(coordinates)
-        .setPopup(popup) // sets a popup on this marker
-        .addTo(map);
+        google.maps.event.addListener(marker,'click', (function(marker,content,infowindow){
+          return function() {
 
-    {% endfor %}
+            /* close the previous info-window */
+            closeInfos();
+
+            infowindow.setContent(content);
+            infowindow.open(map,marker);
+
+            /* keep the handle, in order to close it on next click event */
+            infos[0]=infowindow;
+
+          };
+        })(marker,content,infowindow));
+
+      {% endfor %}
+
+      // Add a marker clusterer to manage the markers.
+      var markerCluster = new MarkerClusterer(map, markers,
+          {imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m'});
+
+    }
+
+    // Closing info windows when clicking on new icon
+    function closeInfos(){
+      if(infos.length > 0){
+
+        /* detach the info-window from the marker ... undocumented in the API docs */
+        infos[0].set("marker", null);
+
+        /* and close it */
+        infos[0].close();
+
+        /* blank the array */
+        infos.length = 0;
+      }
+    }
 
   </script>
+
+  <script src="https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/markerclusterer.js"></script>
+  <script async defer src="https://maps.googleapis.com/maps/api/js?key={{mapAPI}}&callback=initMap"></script>
+
+
 
 {% include 'footer.html' %}
