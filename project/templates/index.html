@@ -1,8 +1,6 @@
 {% include 'header.html' %}
 
-  <h3>Time for some maps</h3>
-  <a href="{{url_for('data')}}">Look at the data</a>
-  <div id='map'></div>
+  <div id='map' class="col-xs-10 col-xs-offset-1"></div>
 
   <script>
     mapboxgl.accessToken = '{{mapAPI}}';
