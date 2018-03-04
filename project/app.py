@@ -170,11 +170,6 @@ avgLong = np.mean(ImageData.query.with_entities(ImageData.longitude).all())
 def index():
     return render_template('index.html', mapAPI=configvars.google_maps_API, imgs=imgs, avg=overallAvgTemp, lat=avgLat, long=avgLong)
 
-# setting hello route for React testing
-@app.route('/hello')
-def hello():
-    return render_template('hello.html')
-
 # setting route for displaying data
 @app.route('/data')
 def data():
