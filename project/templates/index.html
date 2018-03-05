@@ -1,6 +1,12 @@
 {% include 'header.html' %}
 
-  <div id='map' class="col-xs-12" style="width: 90%;"></div>
+<!--
+
+Known Bugs: linked stlye.css file was not applying styling so I was focused to
+use inline styling.
+
+ -->
+  <div id='map' class="col-xs-12" style="width: 100%; height: 600px;"></div>
   <div id='legend'  style="font-family: Arial, sans-serif;
   background: #fff;
   padding: 10px;
@@ -9,34 +15,42 @@
   <script type="text/javascript">
     // referenced http://jsfiddle.net/ZFvDV/
     // referenced https://developers.google.com/maps/documentation/javascript/
+
+    //used for closing info windows when another marker is  clicked
     var infos = [];
+
+    // Setting marker icons for map and Legend
     var iconBase = 'http://maps.google.com/mapfiles/ms/icons/';
     var icons = {
       red: {
         name: 'Max Temp > 60&deg;C',
         icon: iconBase + 'red-dot.png'
       },
-      // yellow: {
-      //   name: 'Average Temp > Overall Average Temp',
-      //   icon: iconBase + 'yellow-dot.png'
-      // },
       blue: {
         name: 'Max Temp < 60&deg;C',
         icon: iconBase + 'blue-dot.png'
       }
     };
 
+    // creating map
     function initMap() {
 
+      // setting map options
       var mapOptions = {
+        // center is based on average lat and long position for data set
         center: new google.maps.LatLng({{lat}}, {{long}}),
+        // zoom is currently manually set, could be auto set by making it a related to
+        // the spread of the data set, ie farther dispearsed dataset would have a lower zoom
         zoom: 15
       };
 
+      // setting map variable with parameters
       var map = new google.maps.Map(document.getElementById("map"),mapOptions);
 
+      // calling setmarkers function to create the markers for the image locations
       setMarkers(map, icons);
 
+      // creating legend
       var legend = document.getElementById('legend');
       for (var key in icons) {
         var type = icons[key];
@@ -47,29 +61,31 @@
         legend.appendChild(div);
       }
 
+      // sets legend on the right bottom of the map
       map.controls[google.maps.ControlPosition.RIGHT_BOTTOM].push(legend);
 
     }
 
-    // function setMarkers(map,locations){
+    // function for createing markers
     function setMarkers(map, icons){
 
-      var marker, i, color;
+      // setting default marker color to blue
+      var color = icons['blue'].icon;
+
+      // creating empty array of markers
       var markers = [];
 
       {% for img in imgs %}
 
-        // Checking for max temp over 60 degrees C
+        // Checking for max temp over 60 degrees C, and coloring appropriately
         if ({{img.maxTemp}} >= 60) {
           color = icons['red'].icon;
-        // } else if ({{img.averageTemp}} > {{avg}}) {
-        //   color = icons['yellow'].icon;
-        } else {
-          color = icons['blue'].icon;
         }
 
+        // setting position
         latlngset = new google.maps.LatLng({{img.latitude}}, {{img.longitude}});
 
+        // creating marker
         var marker = new google.maps.Marker({
           map: map,
           icon: color,
@@ -77,11 +93,10 @@
           position: latlngset
         });
 
+        // adding marker to marker array
         markers.push(marker);
 
-        map.setCenter(marker.getPosition());
-
-
+        // setting content variable for the InfoWindow
         var content = "<table class='popup-table table'>"
                   +  "<th>Max Temp</th>"
                   +  "<th>Min Temp</th>"
@@ -93,9 +108,10 @@
                   +  "</tr>"
               +  "</table>";
 
+        // creating infowindow variable
         var infowindow = new google.maps.InfoWindow();
 
-
+        // linking InfoWindow and marker
         google.maps.event.addListener(marker,'click', (function(marker,content,infowindow){
           return function() {
 
