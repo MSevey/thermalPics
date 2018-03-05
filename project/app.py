@@ -4,19 +4,21 @@ from flask import request, redirect, render_template, url_for
 # Database
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import func
-# images
+# for image analysis
 from PIL import Image
 from PIL.ExifTags import TAGS, GPSTAGS
+# to help with file paths for local images
 import os
+# for use of built in mean functions
 import numpy as np
-# env variables
+# importing a file that is not tracked with git for env variables
 import configvars
 
 # initializing app and configuring
 app = Flask(__name__)
 app.debug = True
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://pguser:password@localhost/thermal'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://' + configvars.pguser + ':' + configvars.pgpassword + '@localhost/thermal'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
