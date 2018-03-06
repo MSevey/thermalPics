@@ -23,8 +23,8 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
 # Setting global variables for directories
-tifDir = './static/imagesRM/tif/'
-jpgDir = './static/imagesRM/jpg/'
+tifDir = '/Users/Matt/Desktop/Code/Python/thermalPics/project/static/imagesRM/tif/'
+jpgDir = '/Users/Matt/Desktop/Code/Python/thermalPics/project/static/imagesRM/jpg/'
 
 # creating imagedata model
 class ImageData(db.Model):
@@ -55,6 +55,7 @@ class ImageData(db.Model):
 #   in pixels for the tiff file.  If built in max, min, and mean are runtimes of O(n)
 #   then the runtime would be O(i*(wh^2)) so it would be faster to calculate the max,
 #   min, and average while looping over the pixels
+#
 def get_image_data(tifDir, jpgDir):
     # T denotes tif variable, J denotes jpg variable
     # Loop over tiff files
@@ -83,7 +84,6 @@ def get_image_data(tifDir, jpgDir):
                 for y in range(h):
                     temps.append(iT.getpixel((x,y)))
 
-
             # store image data to database
             img = ImageData(fn, max(temps), min(temps), np.mean(temps), lon, lat)
             db.session.add(img)
@@ -92,7 +92,7 @@ def get_image_data(tifDir, jpgDir):
     return;
 
 # the follwing functions were referenced from https://gist.github.com/erans/983821
-#   exifDataFunc(), _get_if_exist(), get_lat_lon(), get_lat_lon(), _convert_to_degress()
+#   exifDataFunc(), _get_if_exist(), get_lat_lon(), _convert_to_degress()
 def get_exif_data(image):
     # Returns a dictionary from the exif data of an PIL Image item. Also converts the GPS Tags
     exif_data = {}
@@ -159,28 +159,44 @@ def _convert_to_degress(value):
     return d + (m / 60.0) + (s / 3600.0)
 
 # querying images and data
-imgs = ImageData.query.all()
-overallMaxTemp = max(ImageData.query.with_entities(ImageData.maxTemp).all())
-overallMinTemp = min(ImageData.query.with_entities(ImageData.minTemp).all())
-overallAvgTemp = np.mean(ImageData.query.with_entities(ImageData.averageTemp).all())
-avgLat = np.mean(ImageData.query.with_entities(ImageData.latitude).all())
-avgLong = np.mean(ImageData.query.with_entities(ImageData.longitude).all())
+# querying in a function so it can be called from multiple areas
+# structured this way to enable app to run without data
+def queryData():
+    imgs = ImageData.query.all()
+    overallMaxTemp = max(ImageData.query.with_entities(ImageData.maxTemp).all())
+    overallMinTemp = min(ImageData.query.with_entities(ImageData.minTemp).all())
+    overallAvgTemp = np.mean(ImageData.query.with_entities(ImageData.averageTemp).all())
+    avgLat = np.mean(ImageData.query.with_entities(ImageData.latitude).all())
+    avgLong = np.mean(ImageData.query.with_entities(ImageData.longitude).all())
+
+    return imgs, overallMaxTemp, overallMinTemp, overallAvgTemp, avgLat, avgLong
+
+if ImageData.query.first():
+    imgs, overallMaxTemp, overallMinTemp, overallAvgTemp, avgLat, avgLong = queryData()
 
 # setting root route
 # map of pointers
 @app.route('/')
 def index():
-    return render_template('index.html', mapAPI=configvars.google_maps_API, imgs=imgs, avg=overallAvgTemp, lat=avgLat, long=avgLong)
+    if ImageData.query.first():
+        imgs, overallMaxTemp, overallMinTemp, overallAvgTemp, avgLat, avgLong = queryData()
+        return render_template('index.html', mapAPI=configvars.google_maps_API, imgs=imgs, avg=overallAvgTemp, lat=avgLat, long=avgLong)
+    else:
+        return render_template('data.html')
 
 # setting route for displaying data
 @app.route('/data')
 def data():
-    return render_template('data.html', imgs=imgs, max=overallMaxTemp, min=overallMinTemp, avg=overallAvgTemp)
+    if ImageData.query.first():
+        imgs, overallMaxTemp, overallMinTemp, overallAvgTemp, avgLat, avgLong = queryData()
+        return render_template('data.html', imgs=imgs, max=overallMaxTemp, min=overallMinTemp, avg=overallAvgTemp)
+    else:
+        return render_template('data.html')
 
 # setting img analysis route
 @app.route('/post_imgs')
 def post_imgs():
-    if imgs is None:
+    if not ImageData.query.first():
         get_image_data(tifDir, jpgDir)
     return redirect(url_for('data'))
 

@@ -7,17 +7,20 @@ Potential Improvements: make table rows/data links to google map pin and infowin
  -->
     <div class="jumbotron">
       <h1>Image Data</h1>
-      <table class="table">
-        <th>Overall Max</th>
-        <th>Overall Min</th>
-        <th>Overall Average</th>
-        <tr>
-          <td>{{'{0:.2f}'.format(max[0])}}&deg;C</td>
-          <td>{{'{0:.2f}'.format(min[0])}}&deg;C</td>
-          <td>{{'{0:.2f}'.format(avg)}}&deg;C</td>
-        </tr>
-      </table>
-      <p><a class="btn btn-md btn-success" href="{{url_for('post_imgs')}}" role="button">Analyze images</a></p>
+      {% if imgs: %}
+        <table class="table">
+          <th>Overall Max</th>
+          <th>Overall Min</th>
+          <th>Overall Average</th>
+          <tr>
+            <td>{{'{0:.2f}'.format(max[0])}}&deg;C</td>
+            <td>{{'{0:.2f}'.format(min[0])}}&deg;C</td>
+            <td>{{'{0:.2f}'.format(avg)}}&deg;C</td>
+          </tr>
+        </table>
+      {% else: %}
+        <p><a class="btn btn-md btn-success" href="{{url_for('post_imgs')}}" role="button">Analyze images</a></p>
+      {% endif %}
     </div>
 
     <h3>All Image Data</h3>

@@ -6,6 +6,7 @@ Known Bugs: linked stlye.css file was not applying styling so I was focused to
 use inline styling.
 
  -->
+
   <div id='map' class="col-xs-12" style="width: 100%; height: 600px;"></div>
   <div id='legend'  style="font-family: Arial, sans-serif;
   background: #fff;
@@ -69,8 +70,7 @@ use inline styling.
     // function for createing markers
     function setMarkers(map, icons){
 
-      // setting default marker color to blue
-      var color = icons['blue'].icon;
+      var color;
 
       // creating empty array of markers
       var markers = [];
@@ -80,6 +80,8 @@ use inline styling.
         // Checking for max temp over 60 degrees C, and coloring appropriately
         if ({{img.maxTemp}} >= 60) {
           color = icons['red'].icon;
+        } else {
+          color = icons['blue'].icon;
         }
 
         // setting position
