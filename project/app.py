@@ -3,7 +3,6 @@ from flask import Flask
 from flask import request, redirect, render_template, url_for
 # Database
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import func
 # for image analysis
 from PIL import Image
 from PIL.ExifTags import TAGS, GPSTAGS
@@ -194,6 +193,11 @@ def data():
         return render_template('data.html')
 
 # setting img analysis route
+# using a post route to Analyze images and submit to the database so I could test the
+# application with just a button.  This would not be the way to implement long term as
+# it causes the application to appear very slow while analyzing the images prior to loading
+# the page.  In practice I would set this up based on uploading pictures, then this part of
+# the app (interactive map) doesn't get slowed down by image analysis.  
 @app.route('/post_imgs')
 def post_imgs():
     if not ImageData.query.first():
